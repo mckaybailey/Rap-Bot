@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<a href='/'>Add a Blog Entry</a>
+<a href='/blogs'>Main Blog Page</a>
+<a href='/home'>Home</a>
+    {% if users|length == 0 %}
+    <p>No users yet</p>
+    {% else %}
+
+            {% for user in users %}
+            <div> <a href='/userblog?owner={{user.id}}' style="color:black"><h1>{{user.email}}</h1></a>
+                
+                <hr>
+            </div>
+            {% endfor %}
+
+
+    {% endif %}
+{% endblock %}
