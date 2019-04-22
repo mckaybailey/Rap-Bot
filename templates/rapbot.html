@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Wordnik API</title>
+    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.sound.min.js"></script>
+
+    <script type="text/javascript" src="{{  url_for('static', filename='style.js')  }}"></script>
+    <style>
+        /* Popup container - can be anything you want */
+        .popup {
+          position: relative;
+          display: inline-block;
+          cursor: pointer;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+        
+        /* The actual popup */
+        .popup .popuptext {
+          visibility: hidden;
+          width: 160px;
+          background-color: #555;
+          color: #fff;
+          text-align: center;
+          border-radius: 6px;
+          padding: 8px 0;
+          position: absolute;
+          z-index: 1;
+          bottom: 125%;
+          left: 50%;
+          margin-left: -80px;
+        }
+        
+        /* Popup arrow */
+        .popup .popuptext::after {
+          content: "";
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          margin-left: -5px;
+          border-width: 5px;
+          border-style: solid;
+          border-color: #555 transparent transparent transparent;
+        }
+        
+        /* Toggle this class - hide and show the popup */
+        .popup .show {
+          visibility: visible;
+          -webkit-animation: fadeIn 1s;
+          animation: fadeIn 1s;
+        }
+        
+        /* Add animation (fade in the popup) */
+        @-webkit-keyframes fadeIn {
+          from {opacity: 0;} 
+          to {opacity: 1;}
+        }
+        
+        @keyframes fadeIn {
+          from {opacity: 0;}
+          to {opacity:1 ;}
+        }
+        </style>
+
+  </head>
+  <body>
+      <a href='/blogs'>All your songs</a>
+          <form method='post'>
+          <textarea style="font-family:verdana;z-index: -1;text-transform: lowercase;width: 232px; height: 430px;" id = "word1234" name="blog" onkeyup="askWordnikType()" >{{blog.body}}</textarea>
+          <input type="hidden" name="blog-id" value="{{blog.id}}" />
+          <input type="submit" value='Save Song' />
+        </form>
+          <br/>
+          <!----<button id="submit">submit</button>--->
+
+
+          <form style="font-size: 7px;position: relative;bottom: 440px;left: 250px;">
+            <input type="radio" name="gender" value="male" onmousedown="changeList('rel_rhy=')"> Rhymes
+            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_nry=')"> Close Rhymes  
+            <input type="radio" name="gender" value="other" onmousedown="changeList('sl=')"> sounds like
+            <input type="radio" name="gender" value="male" onmousedown="changeList('rel_hom=')"> homophones
+            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_cns=')"> consonant match  
+            <input type="radio" name="gender" value="other" onmousedown="changeList('sp=')"> spelled like              <input onmousedown="changeList('ml=')" type="radio" name="gender" value="male"> Means like
+            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_gen=')"> generalized
+            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_spc=')"> specific  <br>
+            <input type="radio" name="gender" value="male" onmousedown="changeList('rel_syn=')"> synonims
+            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_ant=')"> antonyms
+            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_trg=')"> trigger  
+            <input type="radio" name="gender" value="male" onmousedown="changeList('rel_bgb=')"> comes before
+            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_bga=')"> comes after
+            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_com=')"> holonyms              <input onmousedown="changeList('rel_par=')" type="radio" name="gender" value="male"> meronyms
+            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_jja=')"> nouns effected  
+            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_jjb=')"> adj that effects
+          </form>
+          <div style="position: relative;bottom: 433.5px;left: 1px;font-family:verdana;z-index: 1;width: 232px">
+            
+
+          </div>
+          <form style="position: relative;bottom: 165px;left: 480px;z-index: 3;">
+
+              <div class="popup" onclick="metaPop('defs')" onmousedown="mdLetters('d')"> Definitions &nbsp&nbsp
+                  <span class="popuptext" id="defs"></span>
+              </div>
+              <div class="popup" onclick="metaPop('0')" onmousedown="mdLetters('psrf')" style="position: relative;left: 120px;">info
+                  <span class="popuptext" id="0">A Simple Popup!, except in mine, there are a lot of words</span>
+              </div>
+
+
+
+          </form>
+          <div id = "rhymes" style="position: relative;bottom: 340px;left: 280px;font-family:verdana;z-index: 1;height: 192px;"></div>
+          <span onmousedown="changeListPage(false)" style="position: relative;bottom: 335px;left: 280px;">backward</span>
+          <span onmousedown="changeListPage(true)" style="position: relative;bottom: 335px;
+          5px;left: 280px;">forward</span>
+
+         
+          <div style="position: relative;bottom: 710px;left: 1px;font-family:verdana;z-index: 1;width: 232px;" id = "usersong">     </div>
+
+          
+
+          Username:<input id="username" type="text"><br>
+Password:&nbsp;<input id="pw" type="password"><br>
+<button id="myButton" onclick="buttonCode()">Submit</button>
+            
+          
+
+  </body>
+</html>

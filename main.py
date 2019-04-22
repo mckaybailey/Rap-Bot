@@ -1,9 +1,9 @@
-from flask import Flask, request, redirect, render_template, session, flash
+from flask import Flask, request, redirect, render_template, session, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:beproductive@localhost:8889/blogz'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:beproductive@localhost:3306/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 app.secret_key = 'y337kGcys&zP3B'
@@ -61,17 +61,24 @@ def register():
         verify = request.form['verify']
 
         # TODO - validate user's data
-
         existing_user = User.query.filter_by(email=email).first()
-        if not existing_user and password == verify:
+        if not existing_user and password == verify and len(email)>=3 and len(password)>=3:
+
             new_user = User(email, password)
             db.session.add(new_user)
             db.session.commit()
             session['email'] = email
             return redirect('/')
-        else:
+        elif not email or not password or not verify:
             # TODO - user better response messaging
-            return render_template('register.html', problem = 'user already exists or passwords did not match')
+            return render_template('register.html', problem = 'one space was left empty')
+        elif existing_user:
+            return render_template('register.html', problem = 'user already exists')
+        elif not password == verify:
+            return render_template('register.html', problem = 'passwords did not match')
+        elif len(email)<3 or len(password)<3:
+            return render_template('register.html', problem = 'invalid password or username')
+
 
     return render_template('register.html')
 
@@ -99,33 +106,69 @@ def index():
                 bloge = 'Error: the blog was left empty'
             return render_template('blog.html', title='Build a  blog', body = blog_body, titlee=titlee, bloge=bloge, btitle=title_name )
         else:
-            new_blogb = Blog(title_name, blog_body, owner)
+            new_blogb = Blog(title_name, "", owner)
             db.session.add(new_blogb)
             db.session.commit()
             blogs = Blog.query.all()
             return redirect('/blog?id={0}'.format(new_blogb.id))
     else:
-        return render_template('blog.html')
+        new_blogb = Blog("new song", "", owner)
+        db.session.add(new_blogb)
+        db.session.commit()
+        
+        
+        blogs = Blog.query.filter_by(owner_id=owner.id).all()
+   
+        
+        return render_template('main.html', title = "blogs page", blogs = blogs)
 
 @app.route('/blogs')
 def display_blogs():
-    blogs = Blog.query.all()
-    return render_template('main.html', title = "blogs page", blogs = blogs)
+    owner = User.query.filter_by(email=session['email']).first()
+    blogs = Blog.query.filter_by(owner_id=owner.id).all()
+    users = Blog.query.all()
+    return render_template('main.html', title = "blogs page", blogs = blogs, users = users)
 
-@app.route('/blog')
+@app.route('/blog', methods=['POST', 'GET'])
 def display_blog():
-    blog_id = request.args.get('id')
-    blog = Blog.query.get(blog_id)
-    return render_template('individual.html', title = "blog page", blog = blog)
+    owner = User.query.filter_by(email=session['email']).first()
+
+    if request.method == 'POST':
+        blog_id = int(request.form['blog-id'])
+        blog = Blog.query.get(blog_id)
+        blog.body = request.form['blog']
+        db.session.commit()
+        blog = Blog.query.get(blog_id)
+        return render_template('rapbot.html', blog=blog)
+    else:
+        blog_id = request.args.get('id')
+        blog = Blog.query.get(blog_id)
+        return render_template('rapbot.html', blog = blog)
 
 
 @app.route('/delete-task', methods=['POST'])
 def delete_task():
 
+
     blog_id = int(request.form['blog-id'])
     blog = Blog.query.get(blog_id)
     db.session.delete(blog)
     db.session.commit()
+    
+
+    return redirect('/blogs')
+
+@app.route('/change_name', methods=['POST'])
+def change_name():
+
+
+    blog_id = int(request.form['blogid'])
+    blog = Blog.query.get(blog_id)
+    blog.title = request.form['title']
+    db.session.commit()
+    blog = Blog.query.get(blog_id)
+    #    return render_template('rapbot.html', blog=blog)
+    
 
     return redirect('/blogs')
 
@@ -134,10 +177,19 @@ def home():
     users = User.query.all()
     return render_template('usernames.html', users=users)
 
+##@app.route('/style.js')
+##def js():
+   ## furl = open("style.js", "r")
+   ## return str(furl
+
+##@app.route('/static/style.js')
+##def js2():
+  ##  return redirect(url_for('static', filename='style.js'))
+
 @app.route('/userblog')
 def userblog():
     user = request.args.get('owner')
-    blogs = Blog.query.filter_by(id=user).all()
+    blogs = Blog.query.filter_by(owner_id=user).all()
     return render_template('userblog.html', blogs = blogs)
 
 

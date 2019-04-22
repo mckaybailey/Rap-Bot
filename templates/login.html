@@ -1,23 +1,62 @@
-{% extends "base.html" %}
 
-{% block content %}
-<h1>Log in to Get to blogging!</h1>
+<!doctype html>
+<html lang="en">
+    <head>
+            <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+        <title>{{title}}</title>
+        <style>
+            .error {
+                color: red;
+            }
+        </style>
+    </head>
+<body>
+
+        
+        
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                <ul>
+                {% for category,message in messages %}
+                    <li class="{{category}}">{{message}}</li>
+                {% endfor %}
+                </ul>
+            {% endwith %}
+        
+
+
+
+
+
+<div class="text-center">
+<h1>Log in to start writing!</h1>
 <p>If you don't have an account, you may <a href="/register">register</a> for one</p>
-<form action="/login" method="post">
-    <table>
+</div>
+<form action="/login" method="post" class="form-signin text-center">
+    <table style="width: 50%; margin: 0 auto !important">
         <tr>
-            <td><label for="email">User</label></td>
+            <td><label for="email" class="sr-only">Username</label></td>
             <td>
-                <input name="email" type="text" value="{{ email }}">
+                <input name="email" class="form-control" type="text" value="{{ email }}" placeholder="Email address">
             </td>
         </tr>
         <tr>
-            <td><label for="password">Password</label></td>
+            <td><label for="password" class="sr-only">Password</label></td>
             <td>
-                <input name="password" type="password">
+                <input name="password" class="form-control" type="password" placeholder="Password">
             </td>
         </tr>
     </table>
-    <input type="submit" value="Login">
+    <input type="image" src="submit.gif" alt="Submit" width="48" height="48">
 </form>
-{% endblock %}
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+</html>

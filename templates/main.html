@@ -1,15 +1,47 @@
 {% extends "base.html" %}
 {% block content %}
-<a href='/'>Add a Blog Entry</a>
-<a href='/blogs'>Main Blog Page</a>
-<a href='/home'>Home</a>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.sound.min.js"></script>
+<a href='/'>New song</a>
+<!---<a href='/blogs'>Main Blog Page</a>-->
+<!---<a href='/home'>Home</a>-->
     {% if blogs|length == 0 %}
     <p>No blogs yet</p>
     {% else %}
 
             {% for blog in blogs %}
-            <div> <a href='/blog?id={{blog.id}}' style="color:black"><h1>{{blog.title}}</h1></a>
+            <div> <a href='/blog?id={{blog.id}}' style="color:black"><span id="demo">{{blog.title}}</span></a>
+                <button onclick="myFunction( {{blog.id}} )" >Rename</button>
+                <form method="POST" action="change_name" id="myForm">
+                    <input type="hidden" name="title" id="newtitle">
+                    <input type="hidden" name="blogid" id="blogid">
+                </form>
+
+<p id="demo"></p>
+
+<script>
+
+function myFunction(id) {
+
+  
+  var txt;
+  var person = prompt("Please enter your name:", "Harry Potter");
+  if (person == null || person == "") {
+    txt = "User cancelled the prompt.";
+  } else {
+    txt = person;
+    let postData = { title: txt, blogid: id };
+    document.getElementById("newtitle").setAttribute("value",txt)
+  document.getElementById("blogid").setAttribute("value",id)
+  document.getElementById("demo").innerHTML = txt;
+  document.getElementById("myForm").submit();
+  }
+
+}
+</script>
                 <p>{{blog.body}}</p>
+                <p>written by: {{blog.owner.email}}</p>
                 <form method="POST" action="/delete-task" style="display:inline-block;">
                     <input type="hidden" name="blog-id" value="{{blog.id}}" />
                     <input type="submit" value="delete" />
