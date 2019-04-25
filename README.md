@@ -20,5 +20,5 @@ Though the program is usable, there are many things that can be improved upon. O
 html elements to be rendered over the textbox, directly over the words in the text box. When the app is loaded on a monitor
 of a different size, the words do not line up perfect, so there is a copy of the words you typed, slightly above or below
 their position in the textbox. To line them up properly, I have to either change the zoom of the webpage, or make the textbox a 
-different height. I have tested this on three monitors, and at 150% zoom, the layout has stayed consistant across all three.
+different height. I have tested this on three monitors, and at 160% zoom, the layout has stayed consistant across all three.
 Plans for expansion include adding security precautions, largly reducing the amount of times it makes a query to the datamuse API so I can release it to the public, and potentially using it as a platform to teach people about the english language.
