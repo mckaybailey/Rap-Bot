@@ -3,35 +3,62 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.sound.min.js"></script>
-<a href='/'>New song</a>
+
+<div class="navbar navbar-dark bg-dark shadow-sm">
+<div class="container d-flex justify-content-between">
+    <a class="navbar-brand d-flex align-items-center" href='/newsong'>New song</a>
+    <a href='/logout'>log out</a>
+</div>
+</div>
 <!---<a href='/blogs'>Main Blog Page</a>-->
 <!---<a href='/home'>Home</a>-->
     {% if blogs|length == 0 %}
-    <p>No blogs yet</p>
+    <p>No songs yet</p>
     {% else %}
 
             {% for blog in blogs %}
-            <div> <a href='/blog?id={{blog.id}}' style="color:black"><span id="demo">{{blog.title}}</span></a>
-                <button onclick="myFunction( {{blog.id}} )" >Rename</button>
+            <div class="jumbotron">
+              <div class="row mb-4">
+                <div class="col-8">
+            <h2><a href='/blog?id={{blog.id}}' style="color:black;"><span id="demo"> {{blog.title}}</span></a></h2>
+            <p>{{blog.body}}</p>
+            <p>written by: {{blog.owner.email}}</p>
+              </div>
+                
+                  <div class="dropdown col-4">
+                      <button style="display:inline-block"class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Settings
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <button class="dropdown-item" onclick="deleteSong( {{blog.id}} )" >Delete</button>
+                        <button class="dropdown-item" onclick="submitSongName( {{blog.id}} )" >Rename</button>
+                      </div>
+                    </div>
+                </div>
                 <form method="POST" action="change_name" id="myForm">
                     <input type="hidden" name="title" id="newtitle">
                     <input type="hidden" name="blogid" id="blogid">
+                </form>
+
+                <form method="POST" action="/delete-task" style="display:inline-block;" id="delete">
+                    <input type="hidden" name="blog-id" id="blog-id" value="{{blog.id}}" />
+                    
                 </form>
 
 <p id="demo"></p>
 
 <script>
 
-function myFunction(id) {
+function submitSongName(id) {
 
   
   var txt;
-  var person = prompt("Please enter your name:", "Harry Potter");
-  if (person == null || person == "") {
+  var person = prompt("Enter the songs name:", "Song name");
+  if (person == null || person == "" || person == "Song name") {
     txt = "User cancelled the prompt.";
   } else {
     txt = person;
-    let postData = { title: txt, blogid: id };
+    //let postData = { title: txt, blogid: id };
     document.getElementById("newtitle").setAttribute("value",txt)
   document.getElementById("blogid").setAttribute("value",id)
   document.getElementById("demo").innerHTML = txt;
@@ -39,17 +66,33 @@ function myFunction(id) {
   }
 
 }
+function deleteSong(id) {
+
+  
+var txt;
+var person = confirm("Are you sure?");
+if (person == null || person == false || person == "Song name") {
+  txt = "User cancelled the prompt.";
+} else {
+  txt = person;
+  //let postData = { title: txt, blogid: id };
+ // document.getElementById("newtitle").setAttribute("value",txt)
+document.getElementById("blog-id").setAttribute("value",id)
+//document.getElementById("demo").innerHTML = txt;
+document.getElementById("delete").submit();
+}
+
+}
 </script>
-                <p>{{blog.body}}</p>
-                <p>written by: {{blog.owner.email}}</p>
-                <form method="POST" action="/delete-task" style="display:inline-block;">
-                    <input type="hidden" name="blog-id" value="{{blog.id}}" />
-                    <input type="submit" value="delete" />
-                </form>
-                <hr>
+
+
+                
             </div>
             {% endfor %}
 
-
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+          
     {% endif %}
 {% endblock %}

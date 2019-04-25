@@ -111,7 +111,14 @@ def index():
             db.session.commit()
             blogs = Blog.query.all()
             return redirect('/blog?id={0}'.format(new_blogb.id))
+
     else:
+                blogs = Blog.query.filter_by(owner_id=owner.id).all()
+                return render_template('main.html', title = "blogs page", blogs = blogs)
+
+@app.route('/newsong')
+def new_song():
+        owner = User.query.filter_by(email=session['email']).first()
         new_blogb = Blog("new song", "", owner)
         db.session.add(new_blogb)
         db.session.commit()
@@ -121,7 +128,6 @@ def index():
    
         
         return render_template('main.html', title = "blogs page", blogs = blogs)
-
 @app.route('/blogs')
 def display_blogs():
     owner = User.query.filter_by(email=session['email']).first()

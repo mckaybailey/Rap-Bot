@@ -13,7 +13,9 @@ var url
 var relatedIndex = 0
 var focusword
 var popup
+var popup1
 var Gfield
+var Nfield
 var definition = undefined 
 
 
@@ -59,18 +61,22 @@ function getusersong(){
 
 function nospaces(usersong = usersong, htmlwords = htmlwords, url = url) {
     //print when typing logic
+    var potentialbreak = ""
+    var potentialspace = ""
     console.log(usersong.length)
     if(usersong==undefined){
       wordarray = "";
     }
     else{
+      
       wordarray = usersong.toLowerCase();
     }
     spaces = 0;
     letternumber = usersong.length+1
     console.log(wordarray)
-    htmlwords = htmlwords +"<span id ="+ wordarray +'onclick="selectText('+letternumber+')"'+ ">" +wordarray+" </span>"
-    
+
+    htmlwords = htmlwords +"<span id ="+ wordarray +'onclick="selectText('+letternumber+')"'+ ">" +wordarray+potentialspace+" </span>"+potentialbreak
+    console.log(htmlwords)
     //put word on screen
     document.getElementById("usersong").innerHTML = ""+htmlwords;
   }
@@ -95,6 +101,7 @@ function spacesf(usersong = usersong, htmlwords = htmlwords, url=url) {
         
       var letternumber = letternumber+  wordarray[i].length+1
       htmlwords = htmlwords +"<span id ="+ wordarray[i] +i+'" onmouseover="askWordnikHover(\''  +wordarray[i]+  '\')"' +'onclick="selectText('+letternumber+')"' +">" +wordarray[i].toLowerCase()+" </span>"
+      console.log(htmlwords)
       }
     }
     console.log(wordarray)
@@ -117,6 +124,9 @@ function askWordnikType() {
   //get user input : usersong
   usersong = getusersong();
   focusword = usersong
+  if (usersong.includes("\n")){
+    usersong = usersong.replace("\n", " \n")
+  }
   
   //initialize url and html for no spaces
   //if no spaces print value to html and mouselisten
@@ -175,25 +185,33 @@ function changeList(relationship) {
 
 
 function metaPop(field) {
+  if(field == "defs"){
   Gfield = field
+  popup = document.getElementById(field);
+  popup.classList.toggle("show");
+  }
+  if(field == 0){
+    Nfield = field
+    popup1 = document.getElementById(field);
+    popup1.classList.toggle("show");
+
+  }
   console.log(field)
   var listtype = url2.replace("=","")
   var queryecho = "&qe="+listtype
-  popup = document.getElementById(field);
-  //popup.innerHTML = field
-  popup.classList.toggle("show");
+
   loadJSON(url+queryecho+url3+mdstr, getMd)
 }
 
 function getMd(data){
   var errything
   console.log(errything)
-  popup.innerHTML = Gfield
+  //popup.innerHTML = Gfield
   if(Gfield=='defs'){
     errything = data[0].defs[0]
     popup.innerHTML = errything
   }
-  if(Gfield==0){
+  if(Nfield==0){
     console.log(data[0].numSyllables)
     errything = data[0].tags
     errything.push(data[0].numSyllables)
@@ -206,7 +224,7 @@ function getMd(data){
     errything = errything.replace("query","pos: ")
     errything = errything.replace("f:", "\nfrequency:")
     console.log(errything)
-    popup.innerHTML = errything
+    popup1.innerHTML = errything
   }
 
   

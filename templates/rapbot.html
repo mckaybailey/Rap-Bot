@@ -1,7 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
     <title>Wordnik API</title>
     
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
@@ -70,65 +75,116 @@
 
   </head>
   <body>
-      <a href='/blogs'>All your songs</a>
-          <form method='post'>
-          <textarea style="font-family:verdana;z-index: -1;text-transform: lowercase;width: 232px; height: 430px;" id = "word1234" name="blog" onkeyup="askWordnikType()" >{{blog.body}}</textarea>
+    <div>
+ 
+
+
+          <form method='post' id="actualsong" >
+          <a href='/blogs' id="allsonglink" onclick="document.getElementById('SaveSong').click();">All your songs</a><br>
+          <textarea style="font-family:verdana;z-index: 1;text-transform: lowercase;width: 16em; height: 26em;position: relative;left:.5em;" id = "word1234" name="blog" onkeyup="askWordnikType()" >{{blog.body}}</textarea>
           <input type="hidden" name="blog-id" value="{{blog.id}}" />
-          <input type="submit" value='Save Song' />
+          <input style="position:relative; bottom:19em;left:1em;z-index: 10;"class="btn btn-secondary"type="submit" value='Save Song' id="SaveSong" />
         </form>
           <br/>
-          <!----<button id="submit">submit</button>--->
-
-
-          <form style="font-size: 7px;position: relative;bottom: 440px;left: 250px;">
-            <input type="radio" name="gender" value="male" onmousedown="changeList('rel_rhy=')"> Rhymes
-            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_nry=')"> Close Rhymes  
-            <input type="radio" name="gender" value="other" onmousedown="changeList('sl=')"> sounds like
-            <input type="radio" name="gender" value="male" onmousedown="changeList('rel_hom=')"> homophones
-            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_cns=')"> consonant match  
-            <input type="radio" name="gender" value="other" onmousedown="changeList('sp=')"> spelled like              <input onmousedown="changeList('ml=')" type="radio" name="gender" value="male"> Means like
-            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_gen=')"> generalized
-            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_spc=')"> specific  <br>
-            <input type="radio" name="gender" value="male" onmousedown="changeList('rel_syn=')"> synonims
-            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_ant=')"> antonyms
-            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_trg=')"> trigger  
-            <input type="radio" name="gender" value="male" onmousedown="changeList('rel_bgb=')"> comes before
-            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_bga=')"> comes after
-            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_com=')"> holonyms              <input onmousedown="changeList('rel_par=')" type="radio" name="gender" value="male"> meronyms
-            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_jja=')"> nouns effected  
-            <input type="radio" name="gender" value="other" onmousedown="changeList('rel_jjb=')"> adj that effects
-          </form>
-          <div style="position: relative;bottom: 433.5px;left: 1px;font-family:verdana;z-index: 1;width: 232px">
-            
-
+          <div style="position:relative; bottom:15em;left:18.5em;">
+          <div id = "rhymes" style="position: relative;bottom:3em;left:4.5em;font-family:verdana;z-index: 1;height: 12em;"></div>
+          <span onmousedown="changeListPage(false)" class="btn btn-secondary"style="position: relative;right:.75em">&#8592;backward</span>
+          <span onmousedown="changeListPage(true)" class="btn btn-secondary" style="position: relative;right:.75em">forward&#8594;</span>
           </div>
-          <form style="position: relative;bottom: 165px;left: 480px;z-index: 3;">
 
-              <div class="popup" onclick="metaPop('defs')" onmousedown="mdLetters('d')"> Definitions &nbsp&nbsp
+          <div style="position: relative;bottom: 17.5em;left: 32em;z-index: 3;">
+
+              <div class="popup btn btn-secondary" onclick="metaPop('defs')" onmousedown="mdLetters('d')"> Definitions &nbsp&nbsp
                   <span class="popuptext" id="defs"></span>
               </div>
-              <div class="popup" onclick="metaPop('0')" onmousedown="mdLetters('psrf')" style="position: relative;left: 120px;">info
-                  <span class="popuptext" id="0">A Simple Popup!, except in mine, there are a lot of words</span>
+              <div class="popup btn btn-secondary" onclick="metaPop('0')" onmousedown="mdLetters('psrf')" style="position: relative;left: 12em;">info
+                  <span class="popuptext" id="0"></span>
               </div>
-
-
-
-          </form>
-          <div id = "rhymes" style="position: relative;bottom: 340px;left: 280px;font-family:verdana;z-index: 1;height: 192px;"></div>
-          <span onmousedown="changeListPage(false)" style="position: relative;bottom: 335px;left: 280px;">backward</span>
-          <span onmousedown="changeListPage(true)" style="position: relative;bottom: 335px;
-          5px;left: 280px;">forward</span>
+            </div>
 
          
-          <div style="position: relative;bottom: 710px;left: 1px;font-family:verdana;z-index: 1;width: 232px;" id = "usersong">     </div>
 
-          
+            <div data-toggle="buttons" style="position:relative; bottom:46em;left:20em;z-index: 5;" >
+                <div class="btn-group btn-group-justified">
+                  <label class="btn btn-primary" onmousedown="changeList('rel_rhy=')">
+                      <input id="radio1" type="radio" name="gender" value="male" >Rhyme
+                  </label>
 
-          Username:<input id="username" type="text"><br>
-Password:&nbsp;<input id="pw" type="password"><br>
-<button id="myButton" onclick="buttonCode()">Submit</button>
-            
-          
+                  <label class="btn btn-primary" onmousedown="changeList('sl=')">
+                      <input type="radio" name="gender" value="other" > sounds like
+                  </label>
+                  <label class="btn btn-primary" onmousedown="changeList('rel_nry=')">
+                      <input type="radio" name="gender" value="other" > Close Rhymes  
+                  </label>
+                  <label class="btn btn-primary" onmousedown="changeList('rel_hom=')">
+                      <input type="radio" name="gender" value="male" > homophones
+                  </label>
+                  <label class="btn btn-primary" onmousedown="changeList('rel_cns=')">
+                      <input type="radio" name="gender" value="other" > consonant match 
+                  </label>
 
+                 
+                </div><br>
+                <div class="btn-group btn-group-justified" style="position:relative;left:3em;">
+                  <label class="btn btn-primary" onmousedown="changeList('ml=')">
+                      <input  type="radio" name="gender" value="male"> Means like
+                  </label>
+
+
+                    <label class="btn btn-primary" onmousedown="changeList('rel_gen=')">
+                        <input type="radio" name="gender" value="other" > generalized
+                    </label>
+                  <label class="btn btn-primary" onmousedown="changeList('rel_spc=')">
+                      <input type="radio" name="gender" value="other" > specific  
+                  </label>
+                  <label class="btn btn-primary" onmousedown="changeList('rel_syn=')">
+                      <input type="radio" name="gender" value="male" > synonims
+                  </label>
+                  <label class="btn btn-primary" onmousedown="changeList('rel_ant=')">
+                      <input type="radio" name="gender" value="other" > antonyms
+                  </label>
+
+                </div><br>
+                <div class="btn-group btn-group-justified" style="position:relative;left:5em;">
+                  <label class="btn btn-primary" onmousedown="changeList('rel_bgb=')">
+                      <input type="radio" name="gender" value="male" > comes before
+                    </label>
+                    <label class="btn btn-primary" onmousedown="changeList('rel_bga=')">
+                        <input type="radio" name="gender" value="other" > comes after
+                    </label>
+                    <label class="btn btn-primary"  onmousedown="changeList('rel_com=')">
+                        <input type="radio" name="gender" value="other"> holonyms
+                    </label>
+                    <label class="btn btn-primary" onmousedown="changeList('rel_par=')">
+                        <input  type="radio" name="gender" value="male"> meronyms
+
+                    </label>
+
+
+                    </div>
+                    <br>
+                    <div class="btn-group btn-group-justified" style="position:relative;left:4.5em;">
+                        <label class="btn btn-primary" onmousedown="changeList('rel_jjb=')">
+                            <input type="radio" name="gender" value="other" > adj that effects
+                        </label>
+                        <label class="btn btn-primary" onmousedown="changeList('rel_trg=')">
+                            <input type="radio" name="gender" value="other" > trigger 
+                        </label>
+                        
+                        <label class="btn btn-primary" onmousedown="changeList('rel_jja=')">
+                            <input type="radio" name="gender" value="other" > nouns effected  
+                          </label>
+                          <label class="btn btn-primary" onmousedown="changeList('sp=')">
+                              <input type="radio" name="gender" value="other" > spelled like
+                          </label>
+
+                    </div>
+                </div>
+                <div style="position: relative;bottom: 55.9em;left: .6em;font-family:verdana;z-index: 1;width: 16em;" id = "usersong">     </div>
+              </div>
+          <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+          <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        
   </body>
 </html>
